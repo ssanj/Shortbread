@@ -1,0 +1,10 @@
+.idea/
+SeleniumJSTestRunner.iml
+SeleniumJSTestRunner.ipr
+SeleniumJSTestRunner.iws
+jstestrunner.iml
+lib_managed/
+project/boot/
+project/build/target/
+project/sbt_project_definition.iml
+target/
