@@ -29,11 +29,11 @@ trait JSTestRunnerPlugin extends DefaultWebProject {
 
   lazy val foxyProfile = "default"
 
-  def firefoxDriver = NamedDriver("Firefox", new FirefoxDriver(new ProfilesIni().getProfile(foxyProfile)))
+  def firefoxDriver = NamedDriver("Firefox", () => new FirefoxDriver(new ProfilesIni().getProfile(foxyProfile)))
 
-  def chromeDriver = NamedDriver("Chrome", new ChromeDriver)
+  def chromeDriver = NamedDriver("Chrome", () => new ChromeDriver)
 
-  case class NamedDriver(name:String, driver:RemoteWebDriver)
+  case class NamedDriver(name:String, f:() => RemoteWebDriver)
 
   lazy val testJs = task{ runTestScripts } describedAs ("Runs Qunit javascript tests")
 
@@ -42,7 +42,7 @@ trait JSTestRunnerPlugin extends DefaultWebProject {
 
     driverSeq.map {
       nd => log.info("Running tests on: " + nd.name)
-      runDriver(nd.driver)
+      runDriver(nd.f.apply)
     } filter(_.isDefined) firstOption match {
       case Some(error) => error
       case _ => None
