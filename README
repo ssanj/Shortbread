@@ -1,0 +1,4 @@
+SBT JavaScript Test Runner Plugin
+---------------------------------
+
+A simple plugin for running javascript tests through SBT.
