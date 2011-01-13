@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement
 class JSTestFailure(element: WebElement) extends SeleniumSupport {
 
   import xpathy._
+
   val message = getText(element, "span[@class='test-message']")
   val errorBody = getElement(element, "table/tbody")
   val expected = getText(errorBody, "tr[@class='test-expected']/td/pre")
@@ -19,14 +20,18 @@ class JSTestFailure(element: WebElement) extends SeleniumSupport {
 }
 
 class JSModuleFailure(element: WebElement) extends SeleniumSupport {
+
   import xpathy._
+
   val moduleName = getText(element, "strong/span[@class='module-name']")("Default Module")
   val testName = getText(element, "strong/span[@class='test-name']")
   val failedTests: Seq[JSTestFailure] = (for (failedTest <- getElements(element, "ol/li[@class='fail']")) yield (new JSTestFailure(failedTest))).toSeq
 }
 
 class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
+
   import xpathy._
+
   val testResult = getElement(driver, "//p[@id='qunit-testresult']")
   val failed = getText(testResult, "span[@class='failed']")
   val passed = getText(testResult, "span[@class='passed']")
@@ -42,22 +47,24 @@ class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
   }
 }
 
-  class JSRunner(driver: RemoteWebDriver, file:String) {
-    driver.get(file)
-    val summary = new TestSummary(driver)
-    for {
-      failures <- summary.getFailures
-      failure <- failures
-    } { print(failure) }
-    print(summary)
+class JSRunner(driver: RemoteWebDriver, file: String) {
+  driver.get(file)
+  val summary = new TestSummary(driver)
+  for {
+    failures <- summary.getFailures
+    failure <- failures
+  } {
+    print(failure)
   }
+  print(summary)
+}
 
 object Runner {
-  def print(summary:TestSummary) {
+  def print(summary: TestSummary) {
     println("total: " + summary.total + ", passed: " + summary.passed + ", failed: " + summary.failed)
   }
 
-  def print(failure:JSModuleFailure) {
+  def print(failure: JSModuleFailure) {
     println(failure.moduleName + " - " + failure.testName)
     for {
       test <- failure.failedTests
