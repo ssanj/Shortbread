@@ -4,7 +4,7 @@ package ssahayam
  * Copyright 2010 Sanjiv Sahayam
  * Licensed under the Apache License, Version 2.0
  */
-trait SeleniumSupport {
+trait SeleniumSupport extends PluginSupport {
   object xpathy {
     import org.openqa.selenium.{WebElement, By}
     import org.openqa.selenium.remote.RemoteWebDriver
@@ -14,22 +14,35 @@ trait SeleniumSupport {
 
     implicit val defaultString:String = "N/A"
 
+    //We can refactor this
+    // (WebElement) => String => String
     def getText(element: WebElement, xpath: String)(implicit default:String): String = {
-      try {
-        getElement(element, xpath).getText
-      } catch {
-        case _ => default
+      getElement(element, xpath) match {
+        case Some(value) => value.getText
+        case None => default
       }
     }
 
-    def getElement(element: WebElement, xpath: String): WebElement = element.findElement(By.xpath(xpath))
+    //(WebElement) => Option[WebElement]
+    //(Option[WebElement) => String => String
+    def getText(element:Option[WebElement], xpath: String)(implicit default:String): String = {
+      element match {
+        case Some(value) => getText(value, xpath)(default)
+        case None => default
+      }
+    }
 
-    def getElement(driver: RemoteWebDriver, xpath: String): WebElement = driver.findElement(By.xpath(xpath))
+    def getElement(element: WebElement, xpath: String): Option[WebElement] =  runSafelyOption(element.findElement(By.xpath(xpath)))// return Option
 
-    def getElements(element: WebElement, xpath: String): Seq[WebElement] = element.findElements(By.xpath(xpath))
+    def getElement(driver: RemoteWebDriver, xpath: String): Option[WebElement] = runSafelyOption(driver.findElement(By.xpath(xpath))) //return Option
 
-    def getElements(driver: RemoteWebDriver, xpath: String): Seq[WebElement] = driver.findElements(By.xpath(xpath))
+    def getElements(element: WebElement, xpath: String): Seq[WebElement] =  runSafelySeq(element.findElements(By.xpath(xpath)))
 
+    def getElements(driver: RemoteWebDriver, xpath: String): Seq[WebElement] =  runSafelySeq(driver.findElements(By.xpath(xpath)))
+
+    private def runSafelySeq(f: => Seq[WebElement]): Seq[WebElement] =  runSafelyWithDefault[Seq[WebElement]](f)(Seq[WebElement]())
+
+    private def runSafelyOption(f: => WebElement): Option[WebElement] =  runSafelyWithDefault[Option[WebElement]](Some(f))(None)
   }
 
 }
