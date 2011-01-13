@@ -52,7 +52,7 @@ class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
     print(summary)
   }
 
-  object Runner {
+object Runner {
   def print(summary:TestSummary) {
     println("total: " + summary.total + ", passed: " + summary.passed + ", failed: " + summary.failed)
   }
