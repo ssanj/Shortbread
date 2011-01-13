@@ -7,12 +7,13 @@ package ssahayam
 
 import sbt._
 
-trait JSTestRunnerPlugin extends DefaultWebProject {
+trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport {
 
   import org.openqa.selenium.remote.RemoteWebDriver
   import org.openqa.selenium.firefox.internal.ProfilesIni
   import org.openqa.selenium.firefox.FirefoxDriver
   import org.openqa.selenium.chrome.ChromeDriver
+  import scala.Option
 
   def scriptDirectoryName = "scripts"
 
@@ -42,38 +43,20 @@ trait JSTestRunnerPlugin extends DefaultWebProject {
 
     driverSeq.map {
       nd => log.info("Running tests on: " + nd.name)
-      runDriver(nd.f.apply)
+      runSafely(runBrowser)(nd.f.apply).toLeftOption
     } filter(_.isDefined) firstOption match {
       case Some(error) => error
       case _ => None
     }
   }
 
-  def runDriver(driver: RemoteWebDriver): Option[String] =  runWithin(jstRunner.loadFiles(log, scriptFileSet.getPaths.toSeq, _), driver)(close)
-
-  def runWithin(f1: (RemoteWebDriver) => Option[String], driver: RemoteWebDriver)(f2: (RemoteWebDriver) => Unit): Option[String] = {
-    val tests:Either[String, Option[String]] = runSafely(f1(driver))
-    val cleanup = runSafely(f2(driver)) // close the driver on success or failure
-
-    tests match {
-      case Left(ex) => Some(ex)
-      case Right(Some(err)) => Some(err)
-      case Right(None) => cleanup match {
-        case Left(ex) => Some(ex)
-        case Right(_) => None
-      }
+  def runBrowser: (RemoteWebDriver) => Option[String] = {
+    driver => {
+      val result = jstRunner.loadFiles(log, scriptFileSet.getPaths.toSeq, driver)
+      close(driver)
+      result
     }
   }
 
-  def runSafely[T](f: => T): Either[String, T] = {
-    try {
-      Right(f)
-    } catch {
-      case error => Left(error.getMessage)
-    }
-  }
-
-  def close(driver: RemoteWebDriver) {
-    if (quitOnExit) driver.quit
-  }
+  def close(driver: RemoteWebDriver) { if (quitOnExit) driver.quit }
 }
