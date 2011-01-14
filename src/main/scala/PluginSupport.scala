@@ -13,22 +13,15 @@ trait PluginSupport {
     def toLeftOption: Option[String] = e.left.toOption
   }
 
-  //Do we need 2 of these methods? Can't we reuse one?
+  def runSafelyWithEither[T](f: => T): Either[String, T] = runSafelyWithDefault[Either[String, T]](Right(f))(e => Left(e.getMessage))
 
-  def runSafely[T,R](f:R => T): R => Either[String, T] = {
-    driver =>
-      try {
-        Right(f(driver))
-      } catch {
-        case error => { Left(error.getMessage) }
-      }
-  }
+  def runSafelyWithOption[T](f: => T): Option[String] = runSafelyWithDefault[Option[String]]{f; None}(e => Some(e.getMessage))
 
-  def runSafelyWithDefault[T](f: => T)(default:T): T = {
+  def runSafelyWithDefault[T](f: => T)(default:(Exception) => T): T = {
     try {
       f
     }  catch {
-      case _ => default
+      case e:Exception => default(e)
     }
   }
 }

@@ -40,9 +40,9 @@ trait SeleniumSupport extends PluginSupport {
 
     def getElements(driver: RemoteWebDriver, xpath: String): Seq[WebElement] =  runSafelySeq(driver.findElements(By.xpath(xpath)))
 
-    private def runSafelySeq(f: => Seq[WebElement]): Seq[WebElement] =  runSafelyWithDefault[Seq[WebElement]](f)(Seq[WebElement]())
+    private def runSafelySeq(f: => Seq[WebElement]): Seq[WebElement] =  runSafelyWithDefault[Seq[WebElement]](f)(_ => Seq[WebElement]())
 
-    private def runSafelyOption(f: => WebElement): Option[WebElement] =  runSafelyWithDefault[Option[WebElement]](Some(f))(None)
+    private def runSafelyOption(f: => WebElement): Option[WebElement] =  runSafelyWithDefault[Option[WebElement]](Some(f))(_ => None)
   }
 
 }

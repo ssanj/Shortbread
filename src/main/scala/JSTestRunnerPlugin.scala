@@ -34,29 +34,51 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport {
 
   def chromeDriver = NamedDriver("Chrome", () => new ChromeDriver)
 
-  case class NamedDriver(name:String, f:() => RemoteWebDriver)
+  case class NamedDriver(name:String, f: () => RemoteWebDriver)
 
   lazy val testJs = task{ runTestScripts } describedAs ("Runs Qunit javascript tests")
 
+  //IO context.
   def runTestScripts: Option[String] = {
     log.info("Running scripts from: " + testScriptPath.getPaths.mkString)
-
-    driverSeq.map {
-      nd => log.info("Running tests on: " + nd.name)
-      runSafely(runBrowser)(nd.f.apply).toLeftOption
-    } filter(_.isDefined) firstOption match {
-      case Some(error) => error
-      case _ => None
-    }
+    None
+//    for {
+//      nd <- driverSeq
+//      driver = nd.f.apply
+//      url <- getUrls
+//    } {
+//      runSafely {
+//        log.info("Loading browser: " + nd.name)
+//
+//        log.info("Running tests on: " + url)
+//        getPage(driver)(url)
+//        close(driver)
+//        print(new JSRunner(driver))
+//      }.toLeftOption
+//    }
   }
 
-  def runBrowser: (RemoteWebDriver) => Option[String] = {
-    driver => {
-      val result = jstRunner.loadFiles(log, scriptFileSet.getPaths.toSeq, driver)
-      close(driver)
-      result
-    }
+  def print(runner:JSRunner) {
+    runner.summary
   }
+
+  def getPage(driver: RemoteWebDriver)(url:String) { driver.get(url)  }
+
+  def getUrls: Seq[String] = scriptFileSet.getPaths.map("file://" + _).toSeq
+
+  //def getErrors(errors:Seq[Option[String]]): Option[String] =  stringToOption(errors flatten map (_.trim) reduceString)
+
+  def stringToOption(str:String): Option[String] = if (str.isEmpty) None else Some(str)
+
+  def reduceString(strings:Seq[String], sep:String): String =  strings mkString (sep)
+
+//  def runBrowser: (RemoteWebDriver) => Option[String] = {
+//    driver => {
+//      val result = jstRunner.loadFiles(log, scriptFileSet.getPaths.toSeq, driver)
+//      close(driver)
+//      result
+//    }
+//  }
 
   def close(driver: RemoteWebDriver) { if (quitOnExit) driver.quit }
 }

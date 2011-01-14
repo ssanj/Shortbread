@@ -10,15 +10,11 @@ import org.scalatest.FunSuite
 final class PluginSupportWithRunWithinSuite extends FunSuite with ShouldMatchers with PluginSupport {
 
   test("runSafely should handle Success") {
-    runSafely {
-      (driver:SomeDriver) =>  22
-    }(SomeDriverInstance) should equal (Right(22))
+    runSafelyWithEither(22) should equal (Right(22))
   }
 
   test("runSafely should handle Failure") {
-    runSafely {
-      (_:SomeDriver) =>  throw new RuntimeException("error")
-    }(SomeDriverInstance) should equal (Left("error"))
+    runSafelyWithEither(throw new RuntimeException("error")) should equal (Left("error"))
   }
 
   test("leftToOption should convert a Left(String) to a Some(String)") {
