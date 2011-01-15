@@ -24,4 +24,9 @@ trait PluginSupport {
       case e:Exception => default(e)
     }
   }
+
+  def runSafelyWithResource[R, S, T](f:R => S)(open: => R)(close: R => T): Option[String] = {
+    runSafelyWithEither[R](open).right.
+            flatMap(resource => runSafelyWithEither[S](f(resource)).right.flatMap(u => runSafelyWithEither[T](close(resource)))).toLeftOption
+  }
 }
