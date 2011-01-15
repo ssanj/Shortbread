@@ -46,29 +46,3 @@ class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
     (for (failedModule <- getElements(driver, "//ol[@id='qunit-tests']/li[@class='fail']")) yield (new JSModuleFailure(failedModule))).toSeq
   }
 }
-
-class JSRunner(driver: RemoteWebDriver) { lazy val summary = new TestSummary(driver) }
-//  for {
-//    failures <- summary.getFailures
-//    failure <- failures
-//  } {
-//    print(failure)
-//  }
-//  print(summary)
-//
-//  def print(summary: TestSummary) {
-//    println("total: " + summary.total + ", passed: " + summary.passed + ", failed: " + summary.failed)
-//  }
-//
-//  def print(failure: JSModuleFailure) {
-//    println(failure.moduleName + " - " + failure.testName)
-//    for {
-//      test <- failure.failedTests
-//    } {
-//      println("\t" + test.message)
-//      println("\t\tExpected: " + test.expected + ", Received: " + test.received)
-//      println("\t\tSource -> " + test.source)
-//      println
-//    }
-//  }
-//}

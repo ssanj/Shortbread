@@ -7,7 +7,7 @@ package ssahayam
 
 import sbt._
 
-trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport {
+trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with ConsolePrinter {
 
   import org.openqa.selenium.remote.RemoteWebDriver
   import org.openqa.selenium.firefox.internal.ProfilesIni
@@ -41,44 +41,20 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport {
   //IO context.
   def runTestScripts: Option[String] = {
     log.info("Running scripts from: " + testScriptPath.getPaths.mkString)
-    None
-//    for {
-//      nd <- driverSeq
-//      driver = nd.f.apply
-//      url <- getUrls
-//    } {
-//      runSafely {
-//        log.info("Loading browser: " + nd.name)
-//
-//        log.info("Running tests on: " + url)
-//        getPage(driver)(url)
-//        close(driver)
-//        print(new JSRunner(driver))
-//      }.toLeftOption
-//    }
+
+    val pages:Seq[(RemoteWebDriver) => Unit] = getUrls map (getPage(_))
+    driverSeq.flatMap(nd => pages.map(page => runSafelyWithResource[RemoteWebDriver, Unit, Unit]{
+     driver => {
+       page(driver)
+       printSummary(populateResults(driver))
+     }}{nd.f.apply}{close}))
   }
 
-  def print(runner:JSRunner) {
-    runner.summary
-  }
+  def populateResults(driver: RemoteWebDriver): TestSummary = new TestSummary(driver)
 
-  def getPage(driver: RemoteWebDriver)(url:String) { driver.get(url)  }
+  def getPage(url:String)(driver: RemoteWebDriver) { driver.get(url)  }
 
   def getUrls: Seq[String] = scriptFileSet.getPaths.map("file://" + _).toSeq
-
-  //def getErrors(errors:Seq[Option[String]]): Option[String] =  stringToOption(errors flatten map (_.trim) reduceString)
-
-  def stringToOption(str:String): Option[String] = if (str.isEmpty) None else Some(str)
-
-  def reduceString(strings:Seq[String], sep:String): String =  strings mkString (sep)
-
-//  def runBrowser: (RemoteWebDriver) => Option[String] = {
-//    driver => {
-//      val result = jstRunner.loadFiles(log, scriptFileSet.getPaths.toSeq, driver)
-//      close(driver)
-//      result
-//    }
-//  }
 
   def close(driver: RemoteWebDriver) { if (quitOnExit) driver.quit }
 }
