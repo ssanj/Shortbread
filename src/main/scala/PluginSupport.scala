@@ -26,7 +26,12 @@ trait PluginSupport {
   }
 
   def runSafelyWithResource[R, S, T](f:R => S)(open: => R)(close: R => T): Option[String] = {
-    runSafelyWithEither[R](open).right.
-            flatMap(resource => runSafelyWithEither[S](f(resource)).right.flatMap(u => runSafelyWithEither[T](close(resource)))).toLeftOption
+
+    def functionFailed(resource:R)(error:String): Either[String, T] = { runSafelyWithEither[T](close(resource)); Left(error) }
+
+    def functionPassed(resource:R)(result:S): Either[String, T] = runSafelyWithEither[T](close(resource))
+
+    runSafelyWithEither[R](open).right.flatMap(resource => runSafelyWithEither[S](f(resource)).
+            fold(functionFailed(resource), functionPassed(resource))).toLeftOption
   }
 }

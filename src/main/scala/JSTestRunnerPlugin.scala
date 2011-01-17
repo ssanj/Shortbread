@@ -42,19 +42,23 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
   def runTestScripts: Option[String] = {
     log.info("Running scripts from: " + testScriptPath.getPaths.mkString)
 
-    val pages:Seq[(RemoteWebDriver) => Unit] = getUrls map (getPage(_))
-    driverSeq.flatMap(nd => pages.map(page => runSafelyWithResource[RemoteWebDriver, Unit, Unit]{
+    val pages:Seq[(RemoteWebDriver) => Unit] = getUrls map (loadPage(_))
+    driverSeq.map(nd => runSafelyWithResource[RemoteWebDriver, Unit, Unit]{
      driver => {
-       page(driver)
-       printSummary(populateResults(driver))
-     }}{nd.f.apply}{close}))
+       pages.map { p =>
+         p(driver)
+         printSummary(getSummary(driver))
+       }
+     }}{open(nd)}{close})
   }
 
-  def populateResults(driver: RemoteWebDriver): TestSummary = new TestSummary(driver)
+  def getSummary(driver: RemoteWebDriver): TestSummary = new TestSummary(driver)
 
-  def getPage(url:String)(driver: RemoteWebDriver) { driver.get(url)  }
+  def loadPage(url:String)(driver: RemoteWebDriver) { driver.get(url)  }
 
   def getUrls: Seq[String] = scriptFileSet.getPaths.map("file://" + _).toSeq
 
   def close(driver: RemoteWebDriver) { if (quitOnExit) driver.quit }
+
+  def open(nd: NamedDriver): RemoteWebDriver = nd.f.apply
 }

@@ -29,20 +29,25 @@ final class PluginSupportWithRunWithinSuite extends FunSuite with ShouldMatchers
     runSafelyWithResource[String, Unit, Unit](s => s + s)("success")(x => "") should equal (None)
   }
 
-  test("runSafelyWithResource should handle open Failure") {
-    runSafelyWithResource[String, Unit, Unit](s => s + s)(throw new RuntimeException("Open Error"))(x => "") should equal (Some("Open Error"))
+  test("runSafelyWithResource should handle open failure") {
+    runSafelyWithResource[String, Unit, Unit](s => s + s)(throw new RuntimeException("Open fail"))(x => "") should equal (Some("Open fail"))
   }
 
-  test("runSafelyWithResource should handle function Failure") {
-    runSafelyWithResource[String, Unit, Unit](s => throw new RuntimeException("function error"))("failure")(x => "") should equal (Some("function error"))
+  //what a crappy way to test this. Is there a better way without side-effects?
+  test("runSafelyWithResource should close the resource even if the function fails") {
+    import scala.collection.mutable.ArrayBuffer
+    val errors = new ArrayBuffer[String]
+    errors.size should equal (0)
+    runSafelyWithResource[String, Unit, Unit](s => throw new RuntimeException("function fail"))("open")(x => errors += "close") should equal (Some("function fail"))
+    errors.contains("close") should equal (true)
   }
 
-  test("runSafelyWithResource should handle close Failure") {
-    runSafelyWithResource[String, Unit, Unit](s => s + s)("failure")(x => throw new RuntimeException("close error")) should equal (Some("close error"))
+  test("runSafelyWithResource should handle close failure") {
+    runSafelyWithResource[String, Unit, Unit](s => s + s)("open")(x => throw new RuntimeException("close fail")) should equal (Some("close fail"))
   }
 
-  test("runSafelyWithResource should handle return the function error even if the close fails") {
-    runSafelyWithResource[Int, Unit, Unit](n => throw new RuntimeException("function error")){42}(x => throw new RuntimeException("final error")) should equal (Some("function error"))
+  test("runSafelyWithResource should handle return the function fail even if the close fails also") {
+    runSafelyWithResource[Int, Unit, Unit](n => throw new RuntimeException("function fail")){42}(x => throw new RuntimeException("final error")) should equal (Some("function fail"))
   }
 
   class SomeDriver
