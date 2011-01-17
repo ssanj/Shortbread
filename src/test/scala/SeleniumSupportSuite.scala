@@ -12,6 +12,7 @@ import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
 
+//These tests are ugly. Make them more "functional".
 final class SeleniumSupportSuite extends FunSuite with ShouldMatchers with MockitoSugar with SeleniumSupport {
 
   val xpath = "abc"

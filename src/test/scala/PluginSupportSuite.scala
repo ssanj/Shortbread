@@ -58,6 +58,14 @@ final class PluginSupportSuite extends FunSuite with ShouldMatchers with PluginS
     runSafelyWithOptionReturnError(throw new RuntimeException("error")) should equal (Some("error"))
   }
 
+  test("runSafelyWithOptionReturnResult should return result on success") {
+    runSafelyWithOptionReturnResult("success") should equal (Some("success"))
+  }
+
+  test("runSafelyWithOptionReturnResult should return None on failure") {
+    runSafelyWithOptionReturnResult(throw new RuntimeException("error")) should equal (None)
+  }
+
   test("runSafelyWithDefault should return result on success") {
     runSafelyWithDefault("5".toInt)(_ => 0) should equal (5)
   }
