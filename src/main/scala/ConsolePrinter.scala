@@ -10,8 +10,9 @@ import sbt.Project
 trait ConsolePrinter extends PluginSupport { this:Project =>
 
   import org.openqa.selenium.remote.RemoteWebDriver
+  import sbt.Path
 
-  def printResults(summary:TestSummary) {
+  private def printResults(summary:TestSummary) {
     for {
       failures <- summary.getFailures
       failure <- failures
@@ -21,11 +22,18 @@ trait ConsolePrinter extends PluginSupport { this:Project =>
     printSummary(summary)
   }
 
-  def printSummary(summary:TestSummary) {
+  private def printSummary(summary:TestSummary) {
     log.info("total: " + summary.total + ", passed: " + summary.passed + ", failed: " + summary.failed)
   }
 
   def getSummary(driver: RemoteWebDriver): TestSummary = new TestSummary(driver)
+
+  def printTestResults(driver:RemoteWebDriver) { printResults(getSummary(driver)) }
+
+  def printScriptLocation(path:Path) {
+    log.info("Running scripts from: ")
+    log.info(path.getPaths.mkString(getLineSeparator))
+  }
 
   def printFailure(failure: JSModuleFailure) {
     log.error(failure.moduleName + " - " + failure.testName)
@@ -50,7 +58,7 @@ trait ConsolePrinter extends PluginSupport { this:Project =>
 
   implicit def stringsOnNewLines: (String, String) => String = stringAdd(getLineSeparator)
 
-  def getLineSeparator: String = runSafelyWithDefault(System.getProperty("line.separator"))(_ => "\n")
+  val getLineSeparator: String = runSafelyWithDefault(System.getProperty("line.separator"))(_ => "\n")
 
   def addOption[T](op1:Option[T], op2:Option[T])(implicit f:(T, T) => T): Option[T] = {
     (op1, op2) match {
@@ -60,7 +68,6 @@ trait ConsolePrinter extends PluginSupport { this:Project =>
       case (Some(v1), Some(v2)) => Some(f(v1, v2))
     }
   }
-
 
   def stringToOption(str:String): Option[String] = if (str.isEmpty) None else Some(str)
 

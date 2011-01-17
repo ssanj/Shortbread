@@ -14,20 +14,9 @@ trait SeleniumSupport extends PluginSupport {
 
     implicit val defaultString:String = "N/A"
 
-    //We can refactor this
-    // (WebElement) => String => String
-    def getText(element: WebElement, xpath: String)(implicit default:String): String = {
-      getElement(element, xpath) match {
+    def getText(element: Option[WebElement], xpath: String)(implicit default:String): String = {
+      element.flatMap(getElement(_, xpath)) match {
         case Some(value) => value.getText
-        case None => default
-      }
-    }
-
-    //(WebElement) => Option[WebElement]
-    //(Option[WebElement) => String => String
-    def getText(element:Option[WebElement], xpath: String)(implicit default:String): String = {
-      element match {
-        case Some(value) => getText(value, xpath)(default)
         case None => default
       }
     }

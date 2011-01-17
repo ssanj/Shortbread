@@ -14,6 +14,7 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
   import org.openqa.selenium.firefox.FirefoxDriver
   import org.openqa.selenium.chrome.ChromeDriver
   import scala.Option
+  import FoxConfig._
 
   def scriptDirectoryName = "scripts"
 
@@ -28,27 +29,29 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
 
   def driverSeq:Seq[NamedDriver] = Seq(firefoxDriver, chromeDriver)
 
-  lazy val foxyProfile = "default"
+  object FoxConfig {
+    lazy val foxProfile = "default"
+  }
 
-  def firefoxDriver = NamedDriver("Firefox", () => new FirefoxDriver(new ProfilesIni().getProfile(foxyProfile)))
+  def firefoxDriver = NamedDriver("Firefox", () => new FirefoxDriver(new ProfilesIni().getProfile(foxProfile)))
 
   def chromeDriver = NamedDriver("Chrome", () => new ChromeDriver)
 
   //f() is a side-effecting function that launches a browser/driver.
   case class NamedDriver(name:String, f: () => RemoteWebDriver)
 
-  lazy val testJs = task{ runTestScripts } describedAs ("Runs Qunit javascript tests")
+  lazy val testJs = task{ runTestScripts } describedAs ("Runs javascript tests")
 
   //IO context where all things IO are run.
   def runTestScripts: Option[String] = {
-    log.info("Running scripts from: " + testScriptPath.getPaths.mkString)
+    printScriptLocation(testScriptPath)
 
     val pages:Seq[(RemoteWebDriver) => Unit] = getUrls map (loadPage(_))
     driverSeq.map(nd => runSafelyWithResource[RemoteWebDriver, Unit, Unit]{
      driver => {
        pages.map { p =>
          p(driver)
-         printResults(getSummary(driver))
+         printTestResults(driver)
        }
      }}{open(nd)}{close})
   }

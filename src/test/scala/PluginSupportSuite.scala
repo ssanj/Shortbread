@@ -7,7 +7,7 @@ package ssahayam
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FunSuite
 
-final class PluginSupportWithRunWithinSuite extends FunSuite with ShouldMatchers with PluginSupport {
+final class PluginSupportSuite extends FunSuite with ShouldMatchers with PluginSupport {
 
   test("runSafelyWithEither should handle Success") {
     runSafelyWithEither(22) should equal (Right(22))

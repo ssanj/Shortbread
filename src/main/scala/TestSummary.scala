@@ -12,7 +12,7 @@ class JSTestFailure(element: WebElement) extends SeleniumSupport {
 
   import xpathy._
 
-  lazy val message = getText(element, "span[@class='test-message']")
+  lazy val message = getText(Some(element), "span[@class='test-message']")
   lazy val errorBody = getElement(element, "table/tbody")
   lazy val expected = getText(errorBody, "tr[@class='test-expected']/td/pre")
   lazy val received = getText(errorBody, "tr[@class='test-actual']/td/pre")
@@ -23,9 +23,12 @@ class JSModuleFailure(element: WebElement) extends SeleniumSupport {
 
   import xpathy._
 
-  lazy val moduleName = getText(element, "strong/span[@class='module-name']")("Default Module")
-  lazy val testName = getText(element, "strong/span[@class='test-name']")
-  lazy val failedTests: Seq[JSTestFailure] = (for (failedTest <- getElements(element, "ol/li[@class='fail']")) yield (new JSTestFailure(failedTest))).toSeq
+  lazy val moduleName = getText(Some(element), "strong/span[@class='module-name']")("Default Module")
+  lazy val testName = getText(Some(element), "strong/span[@class='test-name']")
+  lazy val failedTests: Seq[JSTestFailure] =
+    (for {
+      failedTest <- getElements(element, "ol/li[@class='fail']")
+    } yield (new JSTestFailure(failedTest))).toSeq
 }
 
 class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
@@ -43,6 +46,8 @@ class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
 
   val getModuleFailures: Seq[JSModuleFailure] = {
     import xpathy._
-    (for (failedModule <- getElements(driver, "//ol[@id='qunit-tests']/li[@class='fail']")) yield (new JSModuleFailure(failedModule))).toSeq
+    (for {
+      failedModule <- getElements(driver, "//ol[@id='qunit-tests']/li[@class='fail']")
+    } yield (new JSModuleFailure(failedModule))).toSeq
   }
 }
