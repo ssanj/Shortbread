@@ -15,7 +15,9 @@ trait PluginSupport {
 
   def runSafelyWithEither[T](f: => T): Either[String, T] = runSafelyWithDefault[Either[String, T]](Right(f))(e => Left(e.getMessage))
 
-  def runSafelyWithOption[T](f: => T): Option[String] = runSafelyWithDefault[Option[String]]{f; None}(e => Some(e.getMessage))
+  def runSafelyWithOptionReturnError[T](f: => T): Option[String] = runSafelyWithDefault[Option[String]]{f; None}(e => Some(e.getMessage))
+
+  def runSafelyWithOptionReturnResult[T](f: => T): Option[T] = runSafelyWithDefault[Option[T]]{Some(f)}(_ => None)
 
   def runSafelyWithDefault[T](f: => T)(default:(Exception) => T): T = {
     try {

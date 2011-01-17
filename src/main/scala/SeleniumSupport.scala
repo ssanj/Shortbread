@@ -15,10 +15,7 @@ trait SeleniumSupport extends PluginSupport {
     implicit val defaultString:String = "N/A"
 
     def getText(element: Option[WebElement], xpath: String)(implicit default:String): String = {
-      element.flatMap(getElement(_, xpath)) match {
-        case Some(value) => value.getText
-        case None => default
-      }
+      element.flatMap(getElement(_, xpath)).flatMap(value => runSafelyWithOptionReturnResult(value.getText)).getOrElse(default)
     }
 
     def getElement(element: WebElement, xpath: String): Option[WebElement] =  runSafelyOption(element.findElement(By.xpath(xpath)))// return Option
@@ -31,7 +28,7 @@ trait SeleniumSupport extends PluginSupport {
 
     private def runSafelySeq(f: => Seq[WebElement]): Seq[WebElement] =  runSafelyWithDefault[Seq[WebElement]](f)(_ => Seq[WebElement]())
 
-    private def runSafelyOption(f: => WebElement): Option[WebElement] =  runSafelyWithDefault[Option[WebElement]](Some(f))(_ => None)
+    private def runSafelyOption(f: => WebElement): Option[WebElement] = runSafelyWithDefault[Option[WebElement]](Some(f))(_ => None)
   }
 
 }
