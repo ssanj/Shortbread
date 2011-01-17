@@ -50,4 +50,27 @@ trait PluginSupport {
     runSafelyWithEither[R](open).right.flatMap(resource => runSafelyWithEither[S](f(resource)).
             fold(functionFailed(resource), functionPassed(resource))).toLeftOption
   }
+
+  def addOption[T](op1:Option[T], op2:Option[T])(f:(T, T) => T): Option[T] = {
+    (op1, op2) match {
+      case (None, None) => None
+      case (None, Some(v)) => Some(v)
+      case (Some(v), None) => Some(v)
+      case (Some(v1), Some(v2)) => Some(f(v1, v2))
+    }
+  }
+
+  implicit def getErrors(errors:Seq[Option[String]])(implicit f:(String, String) => String): Option[String] =  {
+    if (errors.isEmpty) None else { errors.drop(1).foldLeft(errors.first)(addOption[String](_, _)(f)) }
+  }
+
+  def stringAdd(sep:String)(str1:String, str2:String): String = str1 + sep + str2
+
+  def stringToOption(str:String): Option[String] = if (str.isEmpty) None else Some(str)
+
+  def reduceString(strings:Seq[String], sep:String): String =  strings mkString (sep)
+
+  implicit def stringsOnNewLines: (String, String) => String = stringAdd(getLineSeparator)
+
+  val getLineSeparator: String = runSafelyWithDefault(System.getProperty("line.separator"))(_ => "\n")
 }

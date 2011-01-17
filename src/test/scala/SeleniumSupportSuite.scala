@@ -132,5 +132,4 @@ final class SeleniumSupportSuite extends FunSuite with ShouldMatchers with Mocki
     verify(mockParentElement).findElement(By.xpath(xpath))
     verify(mockElement).getText
   }
-
 }

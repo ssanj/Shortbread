@@ -74,6 +74,14 @@ final class PluginSupportSuite extends FunSuite with ShouldMatchers with PluginS
     runSafelyWithDefault[Int]("five".toInt)(_ => 0) should equal (0)
   }
 
+  test("getErrors should return None when there are no errors") {
+    getErrors(Seq.empty) should equal (None)
+  }
+
+  test("getErrors should concatenate errors when there are errors") {
+    getErrors(Seq(Some("error1"), Some("error2"), None, Some("error3")))(_ + ":" + _) should equal (Some("error1:error2:error3"))
+  }
+
   class SomeDriver
 
   object SomeDriverInstance extends SomeDriver
