@@ -6,14 +6,14 @@
 package ssahayam
 
 import sbt._
+import org.openqa.selenium.remote.RemoteWebDriver
+import org.openqa.selenium.firefox.internal.ProfilesIni
+import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.chrome.ChromeDriver
+import scala.Option
 
+//clean this code up. Maybe extra another trait for setting up the drivers etc.
 trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with ConsolePrinter {
-
-  import org.openqa.selenium.remote.RemoteWebDriver
-  import org.openqa.selenium.firefox.internal.ProfilesIni
-  import org.openqa.selenium.firefox.FirefoxDriver
-  import org.openqa.selenium.chrome.ChromeDriver
-  import scala.Option
   import FoxConfig._
 
   def scriptDirectoryName = "scripts"

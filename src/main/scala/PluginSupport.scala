@@ -35,10 +35,11 @@ trait PluginSupport {
    *
    * If the open function fails then no attempt is made to run f or close. The error is returned as Some(_).
    * If open succeeds and f fails then an attempt is made to run close. Whether close succeeds or fails, the error raised by f is returned as Some(_).
+   * If open and f succeed, but close fails then the close error is returned as Some(_).
    * if open, f and close all succeed, None is returned.
    *
    * note: Usually open and close (and possibly f) are side-effecting functions. Given that, a failed open/f/close combination would cause
-   * side-effects, although Exceptions will be transformed to Some(_).
+   * side-effects; although not through Exceptions, which will be transformed to Some(_).
    */
   def runSafelyWithResource[R, S, T](f:R => S)(open: => R)(close: R => T): Option[String] = {
 

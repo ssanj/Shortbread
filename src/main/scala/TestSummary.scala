@@ -8,30 +8,7 @@ package ssahayam
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.WebElement
 
-class JSTestFailure(element: WebElement) extends SeleniumSupport {
-
-  import xpathy._
-
-  lazy val message = getText(Some(element), "span[@class='test-message']")
-  lazy val errorBody = getElement(element, "table/tbody")
-  lazy val expected = getText(errorBody, "tr[@class='test-expected']/td/pre")
-  lazy val received = getText(errorBody, "tr[@class='test-actual']/td/pre")
-  lazy val source = getText(errorBody, "tr[@class='test-source']/td/pre")
-}
-
-class JSModuleFailure(element: WebElement) extends SeleniumSupport {
-
-  import xpathy._
-
-  lazy val moduleName = getText(Some(element), "strong/span[@class='module-name']")("Default Module")
-  lazy val testName = getText(Some(element), "strong/span[@class='test-name']")
-  lazy val failedTests: Seq[JSTestFailure] =
-    (for {
-      failedTest <- getElements(element, "ol/li[@class='fail']")
-    } yield (new JSTestFailure(failedTest))).toSeq
-}
-
-class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
+final class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
 
   import xpathy._
 
@@ -50,4 +27,27 @@ class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
       failedModule <- getElements(driver, "//ol[@id='qunit-tests']/li[@class='fail']")
     } yield (new JSModuleFailure(failedModule))).toSeq
   }
+}
+
+final class JSModuleFailure(element: WebElement) extends SeleniumSupport {
+
+  import xpathy._
+
+  lazy val moduleName = getText(Some(element), "strong/span[@class='module-name']")("Default Module")
+  lazy val testName = getText(Some(element), "strong/span[@class='test-name']")
+  lazy val failedTests: Seq[JSTestFailure] =
+    (for {
+      failedTest <- getElements(element, "ol/li[@class='fail']")
+    } yield (new JSTestFailure(failedTest))).toSeq
+}
+
+final class JSTestFailure(element: WebElement) extends SeleniumSupport {
+
+  import xpathy._
+
+  lazy val message = getText(Some(element), "span[@class='test-message']")
+  lazy val errorBody = getElement(element, "table/tbody")
+  lazy val expected = getText(errorBody, "tr[@class='test-expected']/td/pre")
+  lazy val received = getText(errorBody, "tr[@class='test-actual']/td/pre")
+  lazy val source = getText(errorBody, "tr[@class='test-source']/td/pre")
 }
