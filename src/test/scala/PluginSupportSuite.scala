@@ -50,6 +50,22 @@ final class PluginSupportSuite extends FunSuite with ShouldMatchers with PluginS
     runSafelyWithResource[Int, Unit, Unit](n => throw new RuntimeException("function fail")){42}(x => throw new RuntimeException("final error")) should equal (Some("function fail"))
   }
 
+  test("runSafelyWithOption should return None on success") {
+    runSafelyWithOption("success") should equal (None)
+  }
+
+  test("runSafelyWithOption should return Some(error) on failure") {
+    runSafelyWithOption(throw new RuntimeException("error")) should equal (Some("error"))
+  }
+
+  test("runSafelyWithDefault should return result on success") {
+    runSafelyWithDefault("5".toInt)(_ => 0) should equal (5)
+  }
+
+  test("runSafelyWithDefault should return default on failure") {
+    runSafelyWithDefault[Int]("five".toInt)(_ => 0) should equal (0)
+  }
+
   class SomeDriver
 
   object SomeDriverInstance extends SomeDriver
