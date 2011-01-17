@@ -1,10 +1,15 @@
-package ssahayam
-
 /*
  * Copyright 2010 Sanjiv Sahayam
  * Licensed under the Apache License, Version 2.0
  */
-trait ConsolePrinter {
+
+package ssahayam
+
+import sbt.Project
+
+trait ConsolePrinter extends PluginSupport { this:Project =>
+
+  import org.openqa.selenium.remote.RemoteWebDriver
 
   def printResults(summary:TestSummary) {
     for {
@@ -16,19 +21,21 @@ trait ConsolePrinter {
     printSummary(summary)
   }
 
-  def printSummary(summary: TestSummary) {
-    println("total: " + summary.total + ", passed: " + summary.passed + ", failed: " + summary.failed)
+  def printSummary(summary:TestSummary) {
+    log.info("total: " + summary.total + ", passed: " + summary.passed + ", failed: " + summary.failed)
   }
 
+  def getSummary(driver: RemoteWebDriver): TestSummary = new TestSummary(driver)
+
   def printFailure(failure: JSModuleFailure) {
-    println(failure.moduleName + " - " + failure.testName)
+    log.error(failure.moduleName + " - " + failure.testName)
     for {
       test <- failure.failedTests
     } {
-      println("\t" + test.message)
-      println("\t\tExpected: " + test.expected + ", Received: " + test.received)
-      println("\t\tSource -> " + test.source)
-      println
+      log.error("\t" + test.message)
+      log.error("\t\tExpected: " + test.expected + ", Received: " + test.received)
+      log.error("\t\tSource -> " + test.source)
+      log.info("")
     }
   }
 
@@ -41,7 +48,9 @@ trait ConsolePrinter {
 
   def stringAdd(sep:String)(str1:String, str2:String): String = str1 + sep + str2
 
-  implicit def stringsOnNewLines: (String, String) => String = stringAdd(System.getProperty("line.separator"))
+  implicit def stringsOnNewLines: (String, String) => String = stringAdd(getLineSeparator)
+
+  def getLineSeparator: String = runSafelyWithDefault(System.getProperty("line.separator"))(_ => "\n")
 
   def addOption[T](op1:Option[T], op2:Option[T])(implicit f:(T, T) => T): Option[T] = {
     (op1, op2) match {

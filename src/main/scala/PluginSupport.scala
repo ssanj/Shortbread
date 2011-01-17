@@ -25,6 +25,19 @@ trait PluginSupport {
     }
   }
 
+  /**
+   * This function tries to safely run a resource than needs to be:
+   * 1. Supplied
+   * 2. Used
+   * 3. Closed
+   *
+   * If the open function fails then no attempt is made to run f or close. The error is returned as Some(_).
+   * If open succeeds and f fails then an attempt is made to run close. Whether close succeeds or fails, the error raised by f is returned as Some(_).
+   * if open, f and close all succeed, None is returned.
+   *
+   * note: Usually open and close (and possibly f) are side-effecting functions. Given that, a failed open/f/close combination would cause
+   * side-effects, although Exceptions will be transformed to Some(_).
+   */
   def runSafelyWithResource[R, S, T](f:R => S)(open: => R)(close: R => T): Option[String] = {
 
     def functionFailed(resource:R)(error:String): Either[String, T] = { runSafelyWithEither[T](close(resource)); Left(error) }

@@ -34,11 +34,12 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
 
   def chromeDriver = NamedDriver("Chrome", () => new ChromeDriver)
 
+  //f() is a side-effecting function that launches a browser/driver.
   case class NamedDriver(name:String, f: () => RemoteWebDriver)
 
   lazy val testJs = task{ runTestScripts } describedAs ("Runs Qunit javascript tests")
 
-  //IO context.
+  //IO context where all things IO are run.
   def runTestScripts: Option[String] = {
     log.info("Running scripts from: " + testScriptPath.getPaths.mkString)
 
@@ -47,13 +48,12 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
      driver => {
        pages.map { p =>
          p(driver)
-         printSummary(getSummary(driver))
+         printResults(getSummary(driver))
        }
      }}{open(nd)}{close})
   }
 
-  def getSummary(driver: RemoteWebDriver): TestSummary = new TestSummary(driver)
-
+  //Side-effecting function that loads a url in browser/driver
   def loadPage(url:String)(driver: RemoteWebDriver) { driver.get(url)  }
 
   def getUrls: Seq[String] = scriptFileSet.getPaths.map("file://" + _).toSeq
