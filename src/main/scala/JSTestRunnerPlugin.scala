@@ -50,6 +50,7 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
     driverSeq.map(nd => runSafelyWithResource[RemoteWebDriver, Unit, Unit]{
      driver => {
        pages.map { p =>
+         printDriver(nd.name)
          p(driver)
          printTestResults(driver)
        }

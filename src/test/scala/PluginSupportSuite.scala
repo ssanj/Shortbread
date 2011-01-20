@@ -82,6 +82,22 @@ final class PluginSupportSuite extends FunSuite with ShouldMatchers with PluginS
     getErrors(Seq(Some("error1"), Some("error2"), None, Some("error3")))(_ + ":" + _) should equal (Some("error1:error2:error3"))
   }
 
+  test("getErrors should handle a single error") {
+    getErrors(Seq(Some("error1")))(_ + ":" + _) should equal (Some("error1"))
+  }
+
+  test("stringAdd should add 2 Strings with a separator") {
+    stringAdd("<>")("one", "two") should equal ("one<>two")
+  }
+
+  test("stringToOption should convert an empty String to None") {
+    stringToOption("") should equal (None)
+  }
+
+  test("stringToOption should convert a String value x to Some(x)") {
+    stringToOption("some value") should equal (Some("some value"))
+  }
+
   class SomeDriver
 
   object SomeDriverInstance extends SomeDriver

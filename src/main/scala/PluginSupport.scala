@@ -68,9 +68,9 @@ trait PluginSupport {
 
   def stringToOption(str:String): Option[String] = if (str.isEmpty) None else Some(str)
 
-  def reduceString(strings:Seq[String], sep:String): String =  strings mkString (sep)
-
+  //TODO - test
   implicit def stringsOnNewLines: (String, String) => String = stringAdd(getLineSeparator)
 
+  //TODO - test
   val getLineSeparator: String = runSafelyWithDefault(System.getProperty("line.separator"))(_ => "\n")
 }

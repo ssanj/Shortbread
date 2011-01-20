@@ -12,6 +12,7 @@ final class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
 
   import xpathy._
 
+  lazy val url = getBrowserUrl(driver)
   lazy val testResult = getElement(driver, "//p[@id='qunit-testresult']")
   lazy val failed = getText(testResult, "span[@class='failed']")
   lazy val passed = getText(testResult, "span[@class='passed']")
