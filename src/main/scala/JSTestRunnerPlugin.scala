@@ -30,12 +30,23 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
   def driverSeq:Seq[NamedDriver] = Seq(firefoxDriver, chromeDriver)
 
   object FoxConfig {
+
+    import java.util.concurrent.TimeUnit
+    import java.util.concurrent.TimeUnit._
+
     lazy val foxProfile = "default"
+    lazy val timeout:Long = 10
+    lazy val timeUnit:TimeUnit = SECONDS
   }
 
   def firefoxDriver = NamedDriver("Firefox", () => new FirefoxDriver(new ProfilesIni().getProfile(foxProfile)))
 
-  def chromeDriver = NamedDriver("Chrome", () => new ChromeDriver)
+  def chromeDriver = NamedDriver("Chrome", () =>
+    {
+      val chrome = new ChromeDriver
+      chrome.manage.timeouts.implicitlyWait(timeout, timeUnit)
+      chrome
+    })
 
   //f() is a side-effecting function that launches a browser/driver.
   case class NamedDriver(name:String, f: () => RemoteWebDriver)
@@ -49,10 +60,12 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
     val pages:Seq[(RemoteWebDriver) => Unit] = getUrls map (loadPage(_))
     driverSeq.map(nd => runSafelyWithResource[RemoteWebDriver, Unit, Unit]{
      driver => {
+       printDriver(nd.name)
        pages.map { p =>
-         printDriver(nd.name)
          p(driver)
-         printTestResults(driver)
+         val summary = getSummary(driver)
+         printResults(summary)
+         failOnTestError(summary)
        }
      }}{open(nd)}{close})
   }

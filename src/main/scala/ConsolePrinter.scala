@@ -7,6 +7,7 @@ package ssahayam
 
 import sbt.Project
 
+//Side-effecting console activity.
 trait ConsolePrinter extends PluginSupport { this:Project =>
 
   import org.openqa.selenium.remote.RemoteWebDriver
@@ -16,8 +17,9 @@ trait ConsolePrinter extends PluginSupport { this:Project =>
 
   def error(message:String) { log.error(message) }
 
-  private def printResults(summary:TestSummary) {
+  def printResults(summary:TestSummary) {
     info("Running -> " + summary.url)
+    info("hasFailed -> " + summary.hasFailures)
     for {
       failures <- summary.getFailures
       failure <- failures
@@ -34,7 +36,9 @@ trait ConsolePrinter extends PluginSupport { this:Project =>
 
   def getSummary(driver: RemoteWebDriver): TestSummary = new TestSummary(driver)
 
-  def printTestResults(driver:RemoteWebDriver) { printResults(getSummary(driver)) }
+  def failOnTestError(summary:TestSummary) {
+    if (summary.hasFailures) throw new JavaScriptTestFailedException else {}
+  }
 
   def printDriver(driverName:String) {
     info("Using " + driverName + " driver >>>")
@@ -57,4 +61,6 @@ trait ConsolePrinter extends PluginSupport { this:Project =>
       error("Source -> " + test.source)
     }
   }
+
+  class JavaScriptTestFailedException extends RuntimeException("There were test failures")
 }

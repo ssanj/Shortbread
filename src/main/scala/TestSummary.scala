@@ -18,7 +18,7 @@ final class TestSummary(driver: RemoteWebDriver) extends SeleniumSupport {
   lazy val passed = getText(testResult, "span[@class='passed']")
   lazy val total = getText(testResult, "span[@class='total']")
 
-  lazy val hasFailures = failed != '0'
+  lazy val hasFailures = (failed != "0")
 
   lazy val getFailures: Option[Seq[JSModuleFailure]] = if (hasFailures) Some(getModuleFailures) else None
 
