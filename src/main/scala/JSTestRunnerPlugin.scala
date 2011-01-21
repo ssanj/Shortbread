@@ -14,7 +14,6 @@ import scala.Option
 
 //clean this code up. Maybe extra another trait for setting up the drivers etc.
 trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with ConsolePrinter {
-  import FoxConfig._
 
   def scriptDirectoryName = "scripts"
 
@@ -27,30 +26,7 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
 
   def quitOnExit = false
 
-  def driverSeq:Seq[NamedDriver] = Seq(firefoxDriver, chromeDriver)
-
-  //TODO: move config into a separate package. Maybe extract common attributes into a trait.
-  object FoxConfig {
-
-    import java.util.concurrent.TimeUnit
-    import java.util.concurrent.TimeUnit._
-
-    lazy val foxProfile = "default"
-    lazy val timeout:Long = 10
-    lazy val timeUnit:TimeUnit = SECONDS
-  }
-
-  def firefoxDriver = NamedDriver("Firefox", () => new FirefoxDriver(new ProfilesIni().getProfile(foxProfile)))
-
-  def chromeDriver = NamedDriver("Chrome", () =>
-    {
-      val chrome = new ChromeDriver
-      chrome.manage.timeouts.implicitlyWait(timeout, timeUnit)
-      chrome
-    })
-
-  //f() is a side-effecting function that launches a browser/driver.
-  case class NamedDriver(name:String, f: () => RemoteWebDriver)
+  def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.driver, DefaultChromeConfig.driver)
 
   lazy val testJs = task{ runTestScripts } describedAs ("Runs javascript tests")
 
