@@ -29,6 +29,7 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
 
   def driverSeq:Seq[NamedDriver] = Seq(firefoxDriver, chromeDriver)
 
+  //TODO: move config into a separate package. Maybe extract common attributes into a trait.
   object FoxConfig {
 
     import java.util.concurrent.TimeUnit
