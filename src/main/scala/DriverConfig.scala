@@ -16,7 +16,7 @@ trait DriverConfig extends TimeoutSupport {
 
   def setPageTimeout(rd:RemoteWebDriver) { setTimeout(rd)((d, t) => d.manage.timeouts.implicitlyWait(t._1, t._2))(implicitTimeout) }
 
-  def setScriptTimeout(rd:RemoteWebDriver) { setTimeout(rd)((d, t) => d.manage.timeouts.setScriptTimeout(t._1, t._2))(implicitTimeout) }
+  def setScriptTimeout(rd:RemoteWebDriver) { setTimeout(rd)((d, t) => d.manage.timeouts.setScriptTimeout(t._1, t._2))(scriptTimeout) }
 }
 
 trait TimeoutSupport {
