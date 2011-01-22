@@ -17,9 +17,9 @@ trait DriverConfig extends PluginSupport {
   def driver:NamedDriver
 
   //Although each of the timeout functions may throw exception, since they run in an IO context they will be handled appropriately
-  def setPageTimeout(rd:RemoteWebDriver) { rd.manage.timeouts.implicitlyWait(pageTimeout._1, pageTimeout._2) }
+  def setPageTimeout: (RemoteWebDriver) => Unit = { _.manage.timeouts.implicitlyWait(pageTimeout._1, pageTimeout._2) }
 
-  def setScriptTimeout(rd:RemoteWebDriver) { rd.manage.timeouts.setScriptTimeout(scriptTimeout._1, scriptTimeout._2) }
+  def setScriptTimeout: (RemoteWebDriver) => Unit = { _.manage.timeouts.setScriptTimeout(scriptTimeout._1, scriptTimeout._2) }
 }
 
 //f() is a side-effecting function that launches a browser/driver.
