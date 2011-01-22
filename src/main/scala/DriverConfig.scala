@@ -6,6 +6,7 @@ package ssahayam
 
 import org.openqa.selenium.remote.RemoteWebDriver
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit._
 
 trait DriverConfig extends PluginSupport {
 
@@ -17,9 +18,15 @@ trait DriverConfig extends PluginSupport {
   def driver:NamedDriver
 
   //Although each of the timeout functions may throw exception, since they run in an IO context they will be handled appropriately
-  def setPageTimeout: (RemoteWebDriver) => Unit = { _.manage.timeouts.implicitlyWait(pageTimeout._1, pageTimeout._2) }
+  def setPageTimeout: (RemoteWebDriver) => Unit = { setTimeout(_)(pf)(pageTimeout) }
 
-  def setScriptTimeout: (RemoteWebDriver) => Unit = { _.manage.timeouts.setScriptTimeout(scriptTimeout._1, scriptTimeout._2) }
+  def setScriptTimeout: (RemoteWebDriver) => Unit = { setTimeout(_)(sf)(scriptTimeout) }
+
+  def pf(driver:RemoteWebDriver, t:Timeout): Unit = driver.manage.timeouts.implicitlyWait(t._1, t._2)
+
+  def sf(driver:RemoteWebDriver, t:Timeout): Unit = driver.manage.timeouts.setScriptTimeout(t._1, t._2)
+
+  def setTimeout(driver:RemoteWebDriver): ((RemoteWebDriver, Timeout) => Unit) => Timeout => Unit = f => t => f(driver, t) 
 }
 
 //f() is a side-effecting function that launches a browser/driver.
@@ -27,15 +34,14 @@ case class NamedDriver(name:String, f: () => RemoteWebDriver)
 
 object DefaultFoxConfig extends DriverConfig {
 
-  import java.util.concurrent.TimeUnit._
-  import org.openqa.selenium.firefox.FirefoxDriver
-  import org.openqa.selenium.firefox.internal.ProfilesIni
-
   override lazy val profile = "default"
-  override lazy val pageTimeout = (10L, SECONDS)
-  override lazy val scriptTimeout = (20L, SECONDS)
+  override lazy val pageTimeout = (5L, SECONDS)
+  override lazy val scriptTimeout = (5L, SECONDS)
 
   override def driver = NamedDriver("Firefox", () => {
+    import org.openqa.selenium.firefox.FirefoxDriver
+    import org.openqa.selenium.firefox.internal.ProfilesIni
+  
     val ffd = new FirefoxDriver(new ProfilesIni().getProfile(profile))
     setPageTimeout(ffd)
     setScriptTimeout(ffd)
@@ -44,19 +50,18 @@ object DefaultFoxConfig extends DriverConfig {
 }
 
 object DefaultChromeConfig extends DriverConfig {
-  import java.util.concurrent.TimeUnit._
+
   override lazy val profile = "default"
-  override lazy val pageTimeout = (10L, SECONDS)
-  override lazy val scriptTimeout = (20L, SECONDS)
+  override lazy val pageTimeout = (5L, SECONDS)
+  override lazy val scriptTimeout = (5L, SECONDS)
 
-  override def driver = NamedDriver("Chrome", () =>
-    {
-      import org.openqa.selenium.chrome.ChromeDriver
-      val chrome = new ChromeDriver
-      setPageTimeout(chrome)
-      setScriptTimeout(chrome)
-      chrome
+  override def driver = NamedDriver("Chrome", () => {
+     import org.openqa.selenium.chrome.ChromeDriver
+ 
+     val chrome = new ChromeDriver
+     setPageTimeout(chrome)
+     setScriptTimeout(chrome)
+     chrome
   })
-
 }
 
