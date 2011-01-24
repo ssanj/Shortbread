@@ -8,7 +8,7 @@ package shortbread
 import sbt.Project
 
 //Side-effecting console activity.
-trait ConsolePrinter extends PluginSupport { this:Project =>
+trait ConsolePrinter extends PluginSupport with SideEffects { this:Project =>
 
   import org.openqa.selenium.remote.RemoteWebDriver
   import sbt.Path
@@ -59,6 +59,4 @@ trait ConsolePrinter extends PluginSupport { this:Project =>
       error("Source -> " + test.source)
     }
   }
-
-  class JavaScriptTestFailedException extends RuntimeException("There were test failures")
 }

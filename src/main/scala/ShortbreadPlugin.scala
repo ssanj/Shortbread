@@ -41,15 +41,8 @@ trait ShortbreadPlugin extends DefaultWebProject with PluginSupport with Console
          printResults(summary)
          failOnTestError(summary)
        }
-     }}{open(nd)}{close})
+     }}{open(nd)}{close(quitOnExit)})
   }
 
-  //Side-effecting function that loads a url in browser/driver
-  def loadPage(url:String)(driver: RemoteWebDriver) { driver.get(url)  }
-
   def getUrls: Seq[String] = scriptFileSet.getPaths.map("file://" + _).toSeq
-
-  def close(driver: RemoteWebDriver) { if (quitOnExit) driver.quit }
-
-  def open(nd: NamedDriver): RemoteWebDriver = nd.f.apply
 }

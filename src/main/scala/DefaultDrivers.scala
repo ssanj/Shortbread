@@ -14,8 +14,7 @@ object DefaultDrivers {
     override lazy val profile = "default"
     override lazy val scriptTimeout:Option[Timeout] = Some(5L, SECONDS)
 
-    override def webDriver = NamedDriver("Chrome", () =>
-      {
+    override def webDriver = NamedDriver("Chrome", () => {
         import org.openqa.selenium.chrome.ChromeDriver
         val chrome = new ChromeDriver
         setPageTimeout(chrome)
