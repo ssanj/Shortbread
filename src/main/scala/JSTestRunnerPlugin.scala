@@ -26,7 +26,7 @@ trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with Conso
 
   def quitOnExit = false
 
-  def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.driver, DefaultChromeConfig.driver)
+  def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver, DefaultChromeConfig.webDriver)
 
   lazy val testJs = task{ runTestScripts } describedAs ("Runs javascript tests")
 
