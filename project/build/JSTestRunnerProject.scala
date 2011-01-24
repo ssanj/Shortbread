@@ -1,4 +1,4 @@
-package ssahayam
+package shortbread
 import sbt._
 
 class JSTestRunnerProject(info:ProjectInfo) extends PluginProject(info) {

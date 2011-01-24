@@ -3,7 +3,7 @@
  * Licensed under the Apache License, Version 2.0
  */
 
-package ssahayam
+package shortbread
 
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.WebElement

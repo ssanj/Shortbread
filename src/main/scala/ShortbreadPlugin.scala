@@ -3,7 +3,7 @@
  * Licensed under the Apache License, Version 2.0
  */
 
-package ssahayam
+package shortbread
 
 import sbt._
 import org.openqa.selenium.remote.RemoteWebDriver
@@ -12,8 +12,7 @@ import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import scala.Option
 
-//clean this code up. Maybe extra another trait for setting up the drivers etc.
-trait JSTestRunnerPlugin extends DefaultWebProject with PluginSupport with ConsolePrinter {
+trait ShortbreadPlugin extends DefaultWebProject with PluginSupport with ConsolePrinter {
 
   def scriptDirectoryName = "scripts"
 
