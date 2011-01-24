@@ -7,11 +7,10 @@ package shortbread
 import org.openqa.selenium.remote.RemoteWebDriver
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit._
+import DriverConfig._
 
 //TODO: 1. MOve this into an IO package
-trait DriverConfig extends PluginSupport {
-
-  type Timeout = (Long, TimeUnit)
+trait DriverConfig {
 
   val profile:String
   lazy val pageTimeout:Option[Timeout] = None
@@ -25,6 +24,11 @@ trait DriverConfig extends PluginSupport {
   def setScriptTimeout: (RemoteWebDriver) => Unit = {
     driver => setTimeout(scriptTimeout)(t => driver.manage.timeouts.setScriptTimeout(t._1, t._2))
   }
+}
+
+object DriverConfig extends PluginSupport {
+
+  type Timeout = (Long, TimeUnit)
 
   def setTimeout(timeout:Option[Timeout])(f:(Timeout) => Unit) { runSafelyWithOptionReturnError(timeout.map(f)) }
 }
@@ -32,6 +36,8 @@ trait DriverConfig extends PluginSupport {
 //f() is a side-effecting function that launches a browser/driver.
 case class NamedDriver(name:String, f: () => RemoteWebDriver)
 
+
+//TODO: Remove setxyzTimeout duplication.
 object DefaultFoxConfig extends DriverConfig {
   override lazy val profile = "default"
   override lazy val scriptTimeout = Some(5L, SECONDS)
