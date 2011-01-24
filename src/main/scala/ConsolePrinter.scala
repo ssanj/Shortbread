@@ -19,7 +19,6 @@ trait ConsolePrinter extends PluginSupport { this:Project =>
 
   def printResults(summary:TestSummary) {
     info("Running -> " + summary.url)
-    info("hasFailed -> " + summary.hasFailures)
     for {
       failures <- summary.getFailures
       failure <- failures
@@ -46,16 +45,15 @@ trait ConsolePrinter extends PluginSupport { this:Project =>
   }
 
   def printScriptLocation(path:Path) {
-    info("Running scripts from: ")
-    info(path.getPaths.mkString(getLineSeparator))
+    info("Running scripts from: " + path.getPaths.mkString(getLineSeparator))
   }
 
   def printFailure(failure: JSModuleFailure) {
-    error(failure.moduleName + " - " + failure.testName)
+    error("Module -> " + failure.moduleName)
+    error("TestCase -> " + failure.testName)
     for {
       test <- failure.failedTests
     } {
-      error("")
       error("Test -> " + test.message)
       error("Expected: " + test.expected + ", Received: " + test.received)
       error("Source -> " + test.source)

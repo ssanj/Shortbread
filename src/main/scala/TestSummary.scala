@@ -34,7 +34,7 @@ final class JSModuleFailure(element: WebElement) extends SeleniumSupport {
 
   import xpathy._
 
-  lazy val moduleName = getText(Some(element), "strong/span[@class='module-name']")("Default Module")
+  lazy val moduleName = getText(Some(element), "strong/span[@class='module-name']")("Default")
   lazy val testName = getText(Some(element), "strong/span[@class='test-name']")
   lazy val failedTests: Seq[JSTestFailure] =
     (for {

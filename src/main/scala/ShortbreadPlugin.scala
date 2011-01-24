@@ -7,10 +7,8 @@ package shortbread
 
 import sbt._
 import org.openqa.selenium.remote.RemoteWebDriver
-import org.openqa.selenium.firefox.internal.ProfilesIni
-import org.openqa.selenium.firefox.FirefoxDriver
-import org.openqa.selenium.chrome.ChromeDriver
 import scala.Option
+import DefaultDrivers._
 
 trait ShortbreadPlugin extends DefaultWebProject with PluginSupport with ConsolePrinter {
 
@@ -27,7 +25,7 @@ trait ShortbreadPlugin extends DefaultWebProject with PluginSupport with Console
 
   def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver, DefaultChromeConfig.webDriver)
 
-  lazy val testJs = task{ runTestScripts } describedAs ("Runs javascript tests")
+  lazy val shob = task{ runTestScripts } describedAs ("Runs shortbread plugin for javascript tests")
 
   //IO context where all things IO are run.
   def runTestScripts: Option[String] = {
