@@ -67,10 +67,4 @@ trait PluginSupport {
   def stringAdd(sep:String)(str1:String, str2:String): String = str1 + sep + str2
 
   def stringToOption(str:String): Option[String] = if (str.isEmpty) None else Some(str)
-
-  //TODO - test
-  implicit def stringsOnNewLines: (String, String) => String = stringAdd(getLineSeparator)
-
-  //TODO - test
-  val getLineSeparator: String = runSafelyWithDefault(System.getProperty("line.separator"))(_ => "\n")
 }

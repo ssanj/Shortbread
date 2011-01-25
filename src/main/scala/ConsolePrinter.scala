@@ -15,6 +15,8 @@ trait ConsolePrinter extends PluginSupport with SideEffects { this:Project =>
 
   def info(message:String) { log.info(message) }
 
+  def newLine { log.info("") }
+
   def error(message:String) { log.error(message) }
 
   def printResults(summary:TestSummary) {
@@ -30,18 +32,14 @@ trait ConsolePrinter extends PluginSupport with SideEffects { this:Project =>
 
   private def printSummary(summary:TestSummary) {
     info("total: " + summary.total + ", passed: " + summary.passed + ", failed: " + summary.failed)
-    info("")
+    newLine
   }
 
   def getSummary(driver: RemoteWebDriver): TestSummary = new TestSummary(driver)
 
-  def failOnTestError(summary:TestSummary) {
-    if (summary.hasFailures) throw new JavaScriptTestFailedException else {}
-  }
-
   def printDriver(driverName:String) {
     info("Using " + driverName + " driver >>>")
-    info("")
+    newLine
   }
 
   def printScriptLocation(path:Path) {

@@ -75,7 +75,7 @@ final class PluginSupportSuite extends FunSuite with ShouldMatchers with PluginS
   }
 
   test("getErrors should return None when there are no errors") {
-    getErrors(Seq.empty) should equal (None)
+    getErrors(Seq.empty)(_ + ":" +  _) should equal (None)
   }
 
   test("getErrors should concatenate errors when there are errors") {
