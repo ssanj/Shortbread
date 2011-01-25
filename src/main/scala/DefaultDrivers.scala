@@ -23,7 +23,6 @@ object DefaultDrivers {
     })
   }
 
-  //TODO: Remove setxyzTimeout duplication.
   object DefaultFoxConfig extends DriverConfig {
 
     override lazy val profile = "default"
