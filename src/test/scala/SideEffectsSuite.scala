@@ -9,7 +9,7 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 
-final class SideEffectsSuite extends FunSuite with ShouldMatchers with SideEffects with MockitoSugar {
+final class SideEffectsSuite extends FunSuite with ShouldMatchers with SideEffects with MockitoSugar with PluginSupport {
 
   import org.openqa.selenium.remote.RemoteWebDriver
 

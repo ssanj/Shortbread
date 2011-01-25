@@ -1,6 +1,6 @@
 package shortbread
 
-trait SideEffects extends PluginSupport {
+trait SideEffects { this:PluginSupport =>
 
   import org.openqa.selenium.remote.RemoteWebDriver
 
@@ -20,5 +20,5 @@ trait SideEffects extends PluginSupport {
 
   val separator: String = getLineSeparator(System.getProperty("line.separator"))
 
-  def getLineSeparator: ( => String) => String = f => runSafelyWithDefault(f)(_ => "\n")
+  def getLineSeparator: ( => String) => String = f => getStringOrDefault(f)("\n")
 }

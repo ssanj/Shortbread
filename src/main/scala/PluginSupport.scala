@@ -67,4 +67,6 @@ trait PluginSupport {
   def stringAdd(sep:String)(str1:String, str2:String): String = str1 + sep + str2
 
   def stringToOption(str:String): Option[String] = if (str.isEmpty) None else Some(str)
+
+  def getStringOrDefault: ( => String) => String  => String = f => d => runSafelyWithDefault(f)(_ => d)
 }

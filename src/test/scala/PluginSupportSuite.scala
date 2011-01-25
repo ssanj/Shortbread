@@ -98,6 +98,14 @@ final class PluginSupportSuite extends FunSuite with ShouldMatchers with PluginS
     stringToOption("some value") should equal (Some("some value"))
   }
 
+  test("getStringOrDefault should return the supplied function succeeds") {
+    getStringOrDefault("abc")("default") should equal ("abc")
+  }
+
+  test("getStringOrDefault should return the default String is the function fails") {
+    getStringOrDefault(throw new RuntimeException("boom!"))("default") should equal ("default")
+  }
+
   class SomeDriver
 
   object SomeDriverInstance extends SomeDriver
