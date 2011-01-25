@@ -39,7 +39,7 @@ trait ShortbreadPlugin extends DefaultWebProject with PluginSupport with Console
          p(driver)
          val summary = getSummary(driver)
          printResults(summary)
-         failOnTestError(summary)
+         failOnTestError { summary.hasFailures }
        }
      }}{open(nd)}{close(quitOnExit)})
   }

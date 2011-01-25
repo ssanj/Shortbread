@@ -6,20 +6,19 @@ trait SideEffects extends PluginSupport {
 
   class JavaScriptTestFailedException extends RuntimeException("There were test failures")
 
-  def close(exit:Boolean)(driver: RemoteWebDriver) { if (exit) driver.quit }
+  def close: Boolean => RemoteWebDriver => Unit = exit => driver => if (exit) driver.quit
 
-  def open(nd: NamedDriver): RemoteWebDriver = nd.f.apply
+  def open: NamedDriver => RemoteWebDriver = nd => nd.f.apply
 
-  //Side-effecting function that loads a url in browser/driver
-  def loadPage(url:String)(driver: RemoteWebDriver) { driver.get(url)  }
+  def loadPage: String => RemoteWebDriver => Unit = url => driver => driver.get(url)
 
-  def failOnTestError(summary:TestSummary) {
-    if (summary.hasFailures) throw new JavaScriptTestFailedException else {}
+  def failOnTestError: Boolean => Unit = {
+    b => if (b) throw new JavaScriptTestFailedException else {}
   }
 
-  //TODO - test
-  implicit def stringsOnNewLines: (String, String) => String = stringAdd(getLineSeparator)
+  implicit def stringsOnNewLines: (String, String) => String = stringAdd(separator)
 
-  //TODO - test
-  val getLineSeparator: String = runSafelyWithDefault(System.getProperty("line.separator"))(_ => "\n")
+  val separator: String = getLineSeparator(System.getProperty("line.separator"))
+
+  def getLineSeparator: ( => String) => String = f => runSafelyWithDefault(f)(_ => "\n")
 }

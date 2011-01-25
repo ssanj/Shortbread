@@ -43,7 +43,7 @@ trait ConsolePrinter extends PluginSupport with SideEffects { this:Project =>
   }
 
   def printScriptLocation(path:Path) {
-    info("Running scripts from: " + path.getPaths.mkString(getLineSeparator))
+    info("Running scripts from: " + path.getPaths.mkString(separator))
   }
 
   def printFailure(failure: JSModuleFailure) {
