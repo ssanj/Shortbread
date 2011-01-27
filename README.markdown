@@ -54,22 +54,22 @@ Once you have updated both your Plugin and Project configurations:
 
   The following are the configuration options and defaults defined for Shortbread. You can override any options you wish.
   
-  def scriptDirectoryName = "scripts"
+    def scriptDirectoryName = "scripts"
 
-  //location of the files exercising the javascript under test 
-  def testScriptPath: Path = sourceDirectoryName / testDirectoryName / webappDirectoryName / scriptDirectoryName
+    //location of the files exercising the javascript under test 
+    def testScriptPath: Path = sourceDirectoryName / testDirectoryName / webappDirectoryName / scriptDirectoryName
 
-  //files that contain the javascript tests
-  def scriptFiles = "*.html"
+    //files that contain the javascript tests
+    def scriptFiles = "*.html"
 
-  //the set of files that are executed 
-  def scriptFileSet: PathFinder = testScriptPath ** scriptFiles
+    //the set of files that are executed 
+    def scriptFileSet: PathFinder = testScriptPath ** scriptFiles
 
-  //should the browsers exit at the end of the tests
-  def exitOnCompletion = true
+    //should the browsers exit at the end of the tests
+    def exitOnCompletion = true
 
-  //Browsers to use.
-  def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver, DefaultChromeConfig.webDriver)
+    //Browsers to use.
+    def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver, DefaultChromeConfig.webDriver)
 
 #Examples
 
