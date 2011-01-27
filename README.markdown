@@ -78,28 +78,29 @@ Once you have updated both your Plugin and Project configurations:
 #Configuration options
 
   The following are the configuration options and defaults defined for Shortbread. You can override any options you wish.
-  
+
+//name of the scripts directory  
     def scriptDirectoryName = "scripts"
 
-    //location of the files exercising the javascript under test 
+//location of the files exercising the javascript under test 
     def testScriptPath: Path = sourceDirectoryName / testDirectoryName / webappDirectoryName / scriptDirectoryName
 
-    //files that contain the javascript tests
+//files that contain the javascript tests
     def scriptFiles = "*.html"
 
-    //the set of files that are executed 
+//the set of files that are executed 
     def scriptFileSet: PathFinder = testScriptPath ** scriptFiles
 
-    //should the browsers exit at the end of the tests
+//should the browsers exit at the end of the tests?
     def exitOnCompletion = true
 
-    //Browsers to use.
+//Browsers to use.
     def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver, DefaultChromeConfig.webDriver)
     
 #Configuring different browser combinations
 
  For custom driver configurations please see [Selenium Webdriver doco](http://seleniumhq.org/docs/09_webdriver.html#webdriver-implementations) and supply your custom driver to  the `driverSeq` option.
- See [DefaultDrivers](/blob/master/src/main/scala/DefaultDrivers.scala) for example configurations.
+ See [DefaultDrivers](blob/master/src/main/scala/DefaultDrivers.scala) for example configurations.
     
 #Examples
 
