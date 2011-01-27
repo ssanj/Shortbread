@@ -1,8 +1,5 @@
 .idea/
-SeleniumJSTestRunner.iml
-SeleniumJSTestRunner.ipr
-SeleniumJSTestRunner.iws
-jstestrunner.iml
+Shortbread.i*
 lib_managed/
 project/boot/
 project/build/target/
