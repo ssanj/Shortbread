@@ -1,8 +1,10 @@
-package shortbread
 /*
  * Copyright 2010 Sanjiv Sahayam
  * Licensed under the Apache License, Version 2.0
  */
+
+package shortbread
+
 trait PluginSupport {
 
   def leftToOption[T](f: Either[String, T]): Option[String] = f.left.toOption
