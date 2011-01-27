@@ -77,7 +77,7 @@ Once you have updated both your Plugin and Project configurations:
 
 #Configuration options
 
-  The following are the configuration options and defaults defined for Shortbread. You can override any options you wish.
+  The following are the configuration options and defaults defined for Shortbread. You can override any options you wish. If you change any configuration after loading the project into sbt, be sure to `reload`.
 
 *Name of the scripts directory*
     def scriptDirectoryName = "scripts"
@@ -100,7 +100,7 @@ Once you have updated both your Plugin and Project configurations:
 #Configuring different browser combinations
 
  For custom driver configurations please see [Selenium Webdriver doco](http://seleniumhq.org/docs/09_webdriver.html#webdriver-implementations) and supply your custom driver to  the `driverSeq` option.
- See [DefaultDrivers](blob/master/src/main/scala/DefaultDrivers.scala) for example configurations.
+ See [DefaultDrivers](Shortbread/blob/master/src/main/scala/DefaultDrivers.scala) for example configurations.
     
 #Examples
 
