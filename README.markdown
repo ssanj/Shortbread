@@ -3,14 +3,17 @@ Shortbread
 
 A simple plugin for running QUnit tests through [sbt](http://code.google.com/p/simple-build-tool/).
 
+#Version
+
+The lastest version of Shortbread is 0.0.11
+
 #Building from source
 
     git clone git@github.com:ssanj/Shortbread.git
     cd Shortbread
     sbt
-    # From the sbt prompt:
-    update #downloads any dependencies    
-    publish-local #publishes artifact to your local repository
+    update
+    publish-local
 
 
 #Declaring the plugin
@@ -50,6 +53,28 @@ Once you have updated both your Plugin and Project configurations:
     actions  #look for the 'shob' action
     shob #this will run the shortbread plugin
 
+#Sample output
+
+    > shob
+    [info] 
+    [info] == shob ==
+    [info] Running scripts from: /home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts
+    [info] Using Firefox driver >>>
+    [info] 
+    [info] Running -> file:///home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts/jquery-core-tests.html
+    [info] total: 35, passed: 35, failed: 0
+    [info] 
+    [info] Running -> file:///home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts/qunit-website-example.html
+    [error] Module -> Module B
+    [error] TestCase -> some other test
+    [error] Test -> fixed failing test
+    [error] Expected: false, Received: true
+    [error] Source -> ()@file:///home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts/qunit-website-example.html:32
+    [info] total: 6, passed: 5, failed: 1
+    [info] 
+    [info] == shob ==
+    [error] Error running shob: There were test failures
+
 #Configuration options
 
   The following are the configuration options and defaults defined for Shortbread. You can override any options you wish.
@@ -71,28 +96,10 @@ Once you have updated both your Plugin and Project configurations:
     //Browsers to use.
     def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver, DefaultChromeConfig.webDriver)
     
-#Sample output
+#Configuring different browser combinations
 
-    > shob
-    [info] 
-    [info] == shob ==
-    [info] Running scripts from: /home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts
-    [info] Using Firefox driver >>>
-    [info] 
-    [info] Running -> file:///home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts/jquery-core-    tests.html
-    [info] total: 35, passed: 35, failed: 0
-    [info] 
-    [info] Running -> file:///home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts/qunit-website-example.html
-    [error] Module -> Module B
-    [error] TestCase -> some other test
-    [error] Test -> fixed failing test
-    [error] Expected: false, Received: true
-    [error] Source -> ()@file:///home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts/qunit-website-example.html:32
-    [info] total: 6, passed: 5, failed: 1
-    [info] 
-    [info] == shob ==
-    [error] Error running shob: There were test failures
-
+ For custom driver configurations please see [Selenium Webdriver doco](http://seleniumhq.org/docs/09_webdriver.html#webdriver-implementations)
+    
 #Examples
 
 Example use of the plugin can be found in: [Shortbread-Sample](http://github.com/ssanj/Shortbread-Sample)
