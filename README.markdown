@@ -18,27 +18,25 @@ A simple plugin for running QUnit tests through [sbt](http://code.google.com/p/s
 In the project where you want to use Shortbread add it as a dependency to the plugin configuration found in 
 `project/plugins/Plugins.scala`:
 
-import sbt._
+    import sbt._
 
-class Plugins(info:ProjectInfo) extends PluginDefinition(info) {
-  val shortbread = "com.github.ssanj" % "shortbread" % "0.0.11"
-}
+    class Plugins(info:ProjectInfo) extends PluginDefinition(info) {
+      val shortbread = "com.github.ssanj" % "shortbread" % "0.0.11"
+    }
 
 
 #Configuring a simple project
 
 Mixin the `ShortbreadPlugin` trait into your project definition and customize options as needed:
 
-import sbt._
-import shortbread._
-import shortbread.DefaultDrivers._
+    import sbt._
+    import shortbread._
+    import shortbread.DefaultDrivers._
 
-class Project(info:ProjectInfo) extends DefaultWebProject(info) with ShortbreadPlugin {
-
-  //See documentation for a full list of options
-  override def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver)
-  
-}
+    class Project(info:ProjectInfo) extends DefaultWebProject(info) with ShortbreadPlugin {
+      //See documentation for a full list of options
+      override def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver)  
+    }
   
 #Default Configuration
 
