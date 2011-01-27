@@ -98,7 +98,8 @@ Once you have updated both your Plugin and Project configurations:
     
 #Configuring different browser combinations
 
- For custom driver configurations please see [Selenium Webdriver doco](http://seleniumhq.org/docs/09_webdriver.html#webdriver-implementations)
+ For custom driver configurations please see [Selenium Webdriver doco](http://seleniumhq.org/docs/09_webdriver.html#webdriver-implementations) and supply your custom driver to  the `driverSeq` option.
+ See [DefaultDrivers](/blob/master/src/main/scala/DefaultDrivers.scala) for example configurations.
     
 #Examples
 
