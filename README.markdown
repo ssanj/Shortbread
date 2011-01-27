@@ -34,7 +34,7 @@ Mixin the `ShortbreadPlugin` trait into your project definition and customize op
     import shortbread.DefaultDrivers._
 
     class Project(info:ProjectInfo) extends DefaultWebProject(info) with ShortbreadPlugin {
-      //See documentation for a full list of options
+      //Use only the firefox driver. See Configuration options for a full list of options
       override def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver)  
     }
   
@@ -70,6 +70,28 @@ Once you have updated both your Plugin and Project configurations:
 
     //Browsers to use.
     def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver, DefaultChromeConfig.webDriver)
+    
+#Sample output
+
+    > shob
+    [info] 
+    [info] == shob ==
+    [info] Running scripts from: /home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts
+    [info] Using Firefox driver >>>
+    [info] 
+    [info] Running -> file:///home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts/jquery-core-    tests.html
+    [info] total: 35, passed: 35, failed: 0
+    [info] 
+    [info] Running -> file:///home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts/qunit-website-example.html
+    [error] Module -> Module B
+    [error] TestCase -> some other test
+    [error] Test -> fixed failing test
+    [error] Expected: false, Received: true
+    [error] Source -> ()@file:///home/sanj/projects/tools/SBT/Shortbread-Sample/src/test/webapp/scripts/qunit-website-example.html:32
+    [info] total: 6, passed: 5, failed: 1
+    [info] 
+    [info] == shob ==
+    [error] Error running shob: There were test failures
 
 #Examples
 
