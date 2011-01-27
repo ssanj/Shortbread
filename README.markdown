@@ -38,6 +38,8 @@ class Project(info:ProjectInfo) extends DefaultWebProject(info) with ShortbreadP
   //See documentation for a full list of options
   override def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver)
   
+}
+  
 #Default Configuration
 
  By default `src/test/webapp/scripts/*.html` files are executed using the drivers listed in your driverSeq method. 
