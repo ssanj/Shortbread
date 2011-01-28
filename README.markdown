@@ -3,10 +3,6 @@ Shortbread
 
 A simple plugin for running QUnit tests through [sbt](http://code.google.com/p/simple-build-tool/).
 
-#Version
-
-The lastest version of Shortbread is 0.0.11
-
 #Building from source
 
     git clone git@github.com:ssanj/Shortbread.git
@@ -24,6 +20,7 @@ In the project where you want to use Shortbread add it as a dependency to the pl
     import sbt._
 
     class Plugins(info:ProjectInfo) extends PluginDefinition(info) {
+      //update the version to the current latest version
       val shortbread = "com.github.ssanj" % "shortbread" % "0.0.11"
     }
 
@@ -77,15 +74,15 @@ Once you have updated both your Plugin and Project configurations:
 
 #Configuration options
 
-  The following are the configuration options and defaults defined for Shortbread. You can override any options you wish. If you change any configuration after loading the project into sbt, be sure to `reload`.
+  The following are the configuration options and defaults defined for Shortbread. You can override any options you wish. Be sure to `reload` if you change any configuration options.
 
 *Name of the scripts directory*
     def scriptDirectoryName = "scripts"
 
-*Location of the files exercising the javascript under test*
+*Location of the test files* [default -> src/test/webapp/scripts]
     def testScriptPath: Path = sourceDirectoryName / testDirectoryName / webappDirectoryName / scriptDirectoryName
 
-*Files that contain the javascript tests*
+*Files that contain the QUnit tests*
     def scriptFiles = "*.html"
 
 *The set of files that are executed* 
@@ -94,7 +91,7 @@ Once you have updated both your Plugin and Project configurations:
 *Should the browsers exit at the end of the tests?*
     def exitOnCompletion = true
 
-*Browsers to use*
+*Browsers to use* [default -> Firefox and Chrome]
     def driverSeq:Seq[NamedDriver] = Seq(DefaultFoxConfig.webDriver, DefaultChromeConfig.webDriver)
     
 #Configuring different browser combinations
