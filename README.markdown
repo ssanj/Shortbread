@@ -21,7 +21,7 @@ In the project where you want to use Shortbread add it as a dependency to the pl
 
     class Plugins(info:ProjectInfo) extends PluginDefinition(info) {
       //update the version to the current latest version
-      val shortbread = "com.github.ssanj" % "shortbread" % "0.0.11"
+      val shortbread = "com.github.ssanj" % "shortbread" % "0.0.12"
     }
 
 
