@@ -1,7 +1,7 @@
 Shortbread
 ----------
 
-A simple plugin for running QUnit tests through [sbt](http://code.google.com/p/simple-build-tool/).
+A simple plugin for running [QUnit](http://docs.jquery.com/Qunit) tests through [sbt](http://code.google.com/p/simple-build-tool/).
 
 #Building from source
 
