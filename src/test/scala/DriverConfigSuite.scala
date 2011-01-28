@@ -19,11 +19,10 @@ final class DriverConfigSuite extends FunSuite with ShouldMatchers with MockitoS
 
   test("DriverConfig should have default values for timeouts") {
     val mockDriver = mock[RemoteWebDriver]
-    val config = new TestDriverConfigWithDefaults(mockDriver)
+    val config = new TestDriverConfig(mockDriver)
 
     config.pageTimeout should equal (None)
     config.scriptTimeout should equal (None)
-    config.profile should equal ("with defaults profile")
 
     val webDriver = config.webDriver
     webDriver.name should equal ("with defaults driver")
@@ -33,7 +32,7 @@ final class DriverConfigSuite extends FunSuite with ShouldMatchers with MockitoS
 
   test("setTimeout should use default values for timeouts if not supplied") {
     val mockDriver = mock[RemoteWebDriver]
-    val config = new TestDriverConfigWithDefaults(mockDriver)
+    val config = new TestDriverConfig(mockDriver)
     setTimeout(None)(t => mockDriver.close)
     verifyZeroInteractions(mockDriver)
   }
@@ -62,8 +61,48 @@ final class DriverConfigSuite extends FunSuite with ShouldMatchers with MockitoS
     verify(mockTimeouts).implicitlyWait(timeout._1, timeout._2)
   }
 
-  final class TestDriverConfigWithDefaults(mockDriver:RemoteWebDriver) extends DriverConfig {
-    override val profile:String = "with defaults profile"
+  test("withTimeouts should not initialize the driver unless the namedDriver function is invoked") {
+    val mockDriver = mock[RemoteWebDriver]
+    val config = new TestDriverDefaultConfigWithTimeouts(mockDriver)
+    config.webDriver //namedDriver is retrieved but not invoked
+    verifyZeroInteractions(mockDriver)
+  }
+
+  test("withTimeouts should initialize the driver when the namedDriver function is invoked") {
+    import org.openqa.selenium.WebDriver._
+    import java.util.concurrent.TimeUnit._
+
+    val mockDriver = mock[RemoteWebDriver]
+    val mockTimeouts = mock[Timeouts]
+    val mockTimeoutsUpdated = mock[Timeouts]
+    val mockOptions = mock[Options]
+
+    when(mockDriver.manage).thenReturn(mockOptions)
+    when(mockOptions.timeouts).thenReturn(mockTimeouts)
+
+    val config = new TestDriverDefaultConfigWithTimeouts(mockDriver)
+    val nd = config.webDriver
+    val driver = nd.f()
+
+    driver should be theSameInstanceAs (mockDriver)
+
+    verify(mockDriver, atMost(2)).manage
+    verify(mockOptions, atMost(2)).timeouts
+    verify(mockTimeouts).implicitlyWait(2L, SECONDS)
+    verify(mockTimeouts).setScriptTimeout(300L, MILLISECONDS)
+  }
+
+  final class TestDriverConfig(mockDriver:RemoteWebDriver) extends DriverConfig {
     def webDriver = new NamedDriver("with defaults driver", () => mockDriver)
+  }
+
+  final class TestDriverDefaultConfigWithTimeouts(mockDriver:RemoteWebDriver) extends DefaultConfig {
+
+    import java.util.concurrent.TimeUnit._
+
+    override lazy val pageTimeout:Option[Timeout] = Some(2L, SECONDS)
+    override lazy val scriptTimeout:Option[Timeout] = Some(300L, MILLISECONDS)
+
+    def webDriver = new NamedDriver("with defaults driver", withTimeouts(() => mockDriver))
   }
 }
