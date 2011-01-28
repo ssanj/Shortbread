@@ -134,6 +134,12 @@ A workaround is to:
 
 I found on the Mac that the firefox executable is not on the PATH. (as in you can't type firefox at the commandline and have it launch).
 
+You may seen an error such as this:
+
+    [error] Error running shob: Cannot find firefox binary in PATH. Make sure firefox is installed. OS appears to be: MAC
+    
+    [error] System info: os.name: 'Mac OS X', os.arch: 'x86_64', os.version: '10.6.6', java.version: '1.6.0_22'
+
 A simple fix is to create a symlinc called "firefox" and put it in one the directories in your current PATH variable.
 Firefox is usually installed under -> `/Applications/Firefox.app/Content/MacOS/` with `firefox-bin` being the executable.
 
