@@ -115,3 +115,31 @@ Once you have updated both your Plugin and Project configurations:
 
 Example use of the plugin can be found in: [Shortbread-Sample](http://github.com/ssanj/Shortbread-Sample)
 
+#Issues
+
+##IE
+
+When running IE, your default security settings prevent javascript from being executed without user intervention. This
+will lead to all tests failing (incorrectly).
+
+A workaround is to:
+
+ * Go to IE
+ * Click on the "Tools" menu -> go to Internet Options... 
+ * When the dialog box comes up click on the "Advanced" tab. 
+ * Scroll down to the Security setting 
+ * Select the second option "Allow active content to run in files on My Computer." 
+
+##Firefox on MACOS
+
+I found on the Mac that the firefox executable is not on the PATH. (as in you can't type firefox at the commandline and have it launch).
+
+A simple fix is to create a symlinc called "firefox" and put it in one the directories in your current PATH variable.
+Firefox is usually installed under -> `/Applications/Firefox.app/Content/MacOS/` with `firefox-bin` being the executable.
+
+Assuming your `/usr/local/bin` directory is on the PATH variable you can do the following:
+
+    cd /usr/local/bin
+    ln -s /Applications/Firefox.app/Content/MacOS/firefox-bin firefox
+    
+This will allow you to launch your Firefox browser from the commandline as well as from Shortbread.    
