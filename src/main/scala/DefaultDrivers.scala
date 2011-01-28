@@ -38,4 +38,16 @@ object DefaultDrivers {
       ffd
     })
   }
+
+  object DefaultIEConfig extends DriverConfig {
+    import org.openqa.selenium.ie.InternetExplorerDriver
+
+    override lazy val profile = "default"
+    override def webDriver = NamedDriver("InternetExplorer", () => {
+      val ied = new InternetExplorerDriver()
+      setPageTimeout(ied)
+      setScriptTimeout(ied)
+      ied
+    })
+  }
 }
