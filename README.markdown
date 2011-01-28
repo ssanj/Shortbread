@@ -40,7 +40,7 @@ Mixin the `ShortbreadPlugin` trait into your project definition and customize op
   
 #Default Configuration
 
- By default `src/test/webapp/scripts/*.html` files are executed using the drivers listed in your driverSeq method. 
+ By default QUnit test in `src/test/webapp/scripts/*.html` files are executed using the Firefox and Chrome drivers.
  You can override these defaults if you wish. See Configuration options.
   
 #Running Shortbread
