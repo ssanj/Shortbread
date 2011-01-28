@@ -41,7 +41,11 @@ Mixin the `ShortbreadPlugin` trait into your project definition and customize op
 #Default Configuration
 
  By default QUnit test in `src/test/webapp/scripts/*.html` files are executed using the Firefox and Chrome drivers.
- You can override these defaults if you wish. See Configuration options.
+ You can override these defaults if you wish. See Configuration options.  
+
+## Timeouts
+
+To update page and script load timeouts create your custom drivers and add them to the driverSeq.  See [DefaultDrivers](Shortbread/blob/master/src/main/scala/DefaultDrivers.scala) for example configurations.
   
 #Running Shortbread
 
@@ -98,6 +102,14 @@ Once you have updated both your Plugin and Project configurations:
 
  For custom driver configurations please see [Selenium Webdriver doco](http://seleniumhq.org/docs/09_webdriver.html#webdriver-implementations) and supply your custom driver to  the `driverSeq` option.
  See [DefaultDrivers](Shortbread/blob/master/src/main/scala/DefaultDrivers.scala) for example configurations.
+ 
+#Selecting which browsers to run 
+ 
+ If you have only some of the default browsers installed on your system, customize the `driverSeq` option to include
+ only browsers you have.
+ 
+ Eg. If you only have the Chrome browser installed on your system add this to your project file:
+    override def driverSeq:Seq[NamedDriver] = Seq(DefaultChromeConfig.webDriver)
     
 #Examples
 
