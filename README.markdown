@@ -45,7 +45,7 @@ Mixin the `ShortbreadPlugin` trait into your project definition and customize op
 
 ## Timeouts
 
-To update page and script load timeouts create your custom drivers and add them to the driverSeq.  See [DefaultDrivers](Shortbread/blob/master/src/main/scala/DefaultDrivers.scala) for example configurations.
+To update page and script load timeouts, create your custom drivers and add them to the driverSeq.  See [DefaultDrivers](Shortbread/blob/master/src/main/scala/DefaultDrivers.scala) for example configurations.
   
 #Running Shortbread
 
